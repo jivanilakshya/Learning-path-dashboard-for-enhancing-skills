@@ -1,1 +1,1 @@
-# Educational-Infrastructure-and-Connectivity-in-Rural-Areas_22IT090-22IT104-22IT108
+Learning-path-dashboard-for-enhancing-skills
