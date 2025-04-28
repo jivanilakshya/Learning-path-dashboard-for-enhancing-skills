@@ -174,7 +174,7 @@ const mailVerified = asyncHandler(async (req, res) => {
                         <img src="https://cdn-icons-png.flaticon.com/128/4436/4436481.png" alt="Success Icon" class="success-icon">
                         <h1 class="success-title">Email Verified Successfully!</h1>
                         <p class="success-message">Thank you for verifying your email address. Your account is now active.</p>
-                        <a href="https://shiksharthe.vercel.app//login" class="home-button">Return to Homepage</a>
+                        <a href="https://shiksharthe.vercel.app/login" class="home-button">Return to Homepage</a>
                         <div class="footer">
                             <p>© 2024 Shiksharthee. All rights reserved.</p>
                         </div>
