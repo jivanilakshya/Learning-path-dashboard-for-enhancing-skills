@@ -11,7 +11,7 @@ function StudentDashboard() {
   const [error, setError] = useState(null);
 
   const Handlelogout = async() =>{
-    const response = await fetch(`http://localhost:4400/api/student/logout`, {
+    const response = await fetch(`https://shiksharthee.onrender.com/api/student/logout`, {
       method: 'POST',
       credentials: "include", // Ensure cookies are included
       headers: {
@@ -27,7 +27,7 @@ function StudentDashboard() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await fetch(`http://localhost:4400/api/Student/StudentDocument/${ID}`, {
+        const response = await fetch(`https://shiksharthee.onrender.com/api/Student/StudentDocument/${ID}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

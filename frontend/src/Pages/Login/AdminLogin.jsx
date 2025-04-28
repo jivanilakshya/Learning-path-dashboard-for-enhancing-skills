@@ -20,7 +20,7 @@ export default function AdminLogin() {
     const data = { username: User, password: Password };
 
     try {
-        const response = await fetch(`http://localhost:4400/api/admin/login`, {
+        const response = await fetch(`https://shiksharthee.onrender.com/api/admin/login`, {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },

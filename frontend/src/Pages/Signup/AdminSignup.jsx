@@ -16,7 +16,7 @@ const AdminSignup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:4400/api/admin/signup", formData);
+      const response = await axios.post("https://shiksharthee.onrender.com/api/admin/signup", formData);
       setMessage(response.data.message);
     } catch (error) {
       setMessage(error.response?.data?.message || "Signup failed");

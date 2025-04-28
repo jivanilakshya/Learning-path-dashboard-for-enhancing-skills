@@ -113,14 +113,14 @@ import { log } from "console";
                                 Thank you for joining Shiksharthee! To get started with your learning journey, please verify your email address by clicking the button below.
                             </div>
                             <div class="button-container">
-                                <a href="http://localhost:4400/api/student/verify?id=${createdStudent_id}" class="verify-button">
+                                <a href="https://shiksharthee.onrender.com/api/student/verify?id=${createdStudent_id}" class="verify-button">
                                     Verify Email Address
                                 </a>
                             </div>
                             <div class="message">
                                 If the button doesn't work, you can copy and paste this link into your browser:<br>
-                                <a href="http://localhost:4400/api/student/verify?id=${createdStudent_id}" style="color: #3498db; word-break: break-all;">
-                                    http://localhost:4400/api/student/verify?id=${createdStudent_id}
+                                <a href="https://shiksharthee.onrender.com/api/student/verify?id=${createdStudent_id}" style="color: #3498db; word-break: break-all;">
+                                    https://shiksharthee.onrender.com/api/student/verify?id=${createdStudent_id}
                                 </a>
                             </div>
                         </div>

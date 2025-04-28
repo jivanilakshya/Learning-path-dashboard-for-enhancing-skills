@@ -33,7 +33,7 @@ function Search() {
   const openTeacherDec = async(id,fname,lname,sub)=>{
     setTname({fname,lname,sub});
 
-    const data = await fetch(`http://localhost:4400/api/teacher/teacherdocuments`,{
+    const data = await fetch(`https://shiksharthee.onrender.com/api/teacher/teacherdocuments`,{
         method: 'POST',
         credentials: "include",
         headers: {
@@ -51,7 +51,7 @@ function Search() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await fetch(`http://localhost:4400/api/course/student/${ID}/enrolled`, {
+        const response = await fetch(`https://shiksharthee.onrender.com/api/course/student/${ID}/enrolled`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
