@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import '../Landing/Landing.css'
 import Footer from '../../Footer/Footer'
 import Header from '../Header/Header'
-
+const BASE_URL = "https://shiksharthee.onrender.com"; 
 function Courses() {
   const [facList, setFacList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,7 +10,7 @@ function Courses() {
   const teachersList = async(sub)=>{
     setLoading(true);
 
-    const response = await fetch(`/api/course/${sub}`, {
+    const response = await fetch(`${BASE_URL}/api/course/${sub}`, {
       method: 'GET',
       credentials: "include",
       headers: {
