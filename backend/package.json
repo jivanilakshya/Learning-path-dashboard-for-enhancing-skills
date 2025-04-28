@@ -5,8 +5,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    
-    "dev": "node src/index.js"
+    "dev": "nodemon --watch src --ext js,json --ignore 'src/**/*.test.js' --exec 'node --experimental-json-modules src/index.js'",
+    "start": "node src/index.js"
   },
   "github": "https://github.com/Pika003/e-Learning-Platform.git",
   "author": "Parag, Satyajit, Gopi, Aditya",
