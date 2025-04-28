@@ -61,13 +61,13 @@ const Signup = () => {
 
     try {
       // Send data to backend (you need to implement this part)
-      console.log("API Request URL:", `http://localhost:5000/api/${userType}/signup`);
+      console.log("API Request URL:", `http://localhost:4400/api/${userType}/signup`);
       console.log("Request Data:", JSON.stringify(data));
       console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
 
 
 
-const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${userType}/signup`, { 
+const response = await fetch(`http://localhost:4400/api/${userType}/signup`, { 
   method: "POST",
   mode: "cors",
   credentials: "include",

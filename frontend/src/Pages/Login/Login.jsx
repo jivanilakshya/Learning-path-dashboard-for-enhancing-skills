@@ -46,7 +46,7 @@ export default function Login() {
     };
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${userType}/login`, {
+      const response = await fetch(`http://localhost:4400/api/${userType}/login`, {
         method: "POST",
         credentials: "include",
         headers: {

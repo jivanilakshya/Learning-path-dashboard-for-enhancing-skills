@@ -99,14 +99,6 @@ const Admin = () => {
 
 
 
-  
-
-
-
-
-
-
-
 
 
   return (
@@ -126,10 +118,10 @@ const Admin = () => {
         </div>
         </NavLink>
         <div className="flex items-center">
-          <div className="relative mr-4">
+          {/* <div className="relative mr-4">
             <IoIosNotificationsOutline className="h-8 w-8 text-white" />
             <span className="absolute top-1 right-1 h-3 w-3 bg-red-500 rounded-full"></span>
-          </div>
+          </div> */}
           <button onClick={() => navigator('/')} className="bg-blue-500 text-white px-4 py-2 rounded-md">
             Logout
           </button>

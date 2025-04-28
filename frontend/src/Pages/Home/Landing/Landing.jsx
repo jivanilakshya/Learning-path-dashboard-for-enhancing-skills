@@ -219,22 +219,29 @@ function Landing() {
       <div className="flex items-center justify-center gap-10">
         {!loading && facList && (
           facList.map(fac => (
-          <div key={fac._id} className="bg-[#99afbc] p-5 rounded-md ">
-            <div className="flex gap-3 items-center mb-2 ">
-            <img src="https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png" alt="profile_img" width={50} />
-            <div className="flex flex-col justify-center items-start pl-3">
-            <p>{fac.enrolledteacher.Firstname} {fac.enrolledteacher.Lastname}</p>
-            <h4 className="text-blue-900">{fac.enrolledteacher.Email}</h4>
-            </div>
-            </div>
-            { fac.enrolledteacher.Email === "urttsg@gmail.com" ?
-              <h4><span className="font-bold text-brown-800">Education :</span> Post graduate from Calcutta University</h4> 
-              : 
-              <h4><span className="font-bold text-brown-800">Education :</span> Post graduate from Sister Nivedita university</h4>
-            }
-            { fac.enrolledteacher.Email === "urttsg@gmail.com" ? <h4>1 years of teaching experience</h4> : <h4>2 years of teaching experience</h4>}
-          </div>
-        )))}
+            fac.enrolledteacher ? (
+              <div key={fac._id} className="bg-[#99afbc] p-5 rounded-md ">
+                <div className="flex gap-3 items-center mb-2 ">
+                  <img src="https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png" alt="profile_img" width={50} />
+                  <div className="flex flex-col justify-center items-start pl-3">
+                    <p>{fac.enrolledteacher?.Firstname || 'N/A'} {fac.enrolledteacher?.Lastname || ''}</p>
+                    <h4 className="text-blue-900">{fac.enrolledteacher?.Email || 'No email available'}</h4>
+                  </div>
+                </div>
+                {fac.enrolledteacher?.Email === "urttsg@gmail.com" ? (
+                  <h4><span className="font-bold text-brown-800">Education :</span> Post graduate from IIT</h4> 
+                ) : ( 
+                  <h4><span className="font-bold text-brown-800">Education :</span> Post graduate from IIT</h4>
+                )}
+                {fac.enrolledteacher?.Email === "urttsg@gmail.com" ? (
+                  <h4>2 years of teaching experience</h4>
+                ) : (
+                  <h4>2 years of teaching experience</h4>
+                )}
+              </div>
+            ) : null
+          ))
+        )}
       </div>
 
       </div>

@@ -15,7 +15,7 @@ function Contact() {
     }else if((!/\S+@\S+\.\S+/.test(email))){
       alert("Enter a valid email!")
     }else{
-      const data = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/admin/contact-us`,{
+      const data = await fetch(`http://localhost:4400/api/admin/contact-us`,{
         method: 'POST',
         credentials: "include",
         headers: {

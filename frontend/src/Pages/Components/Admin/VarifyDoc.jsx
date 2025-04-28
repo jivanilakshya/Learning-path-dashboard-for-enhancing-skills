@@ -29,7 +29,7 @@ function VarifyDoc() {
           };
       
           const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/admin/${adminID}/approve/${type}/${id}`,
+            `http://localhost:4400/api/admin/${adminID}/approve/${type}/${id}`,
             {
               method: "POST",
               headers: {
@@ -60,7 +60,7 @@ function VarifyDoc() {
                 console.log("1");
                 console.log("token", token);
     
-                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/admin/${adminID}/documents/${type}/${ID}`, {
+                const response = await fetch(`http://localhost:4400/api/admin/${adminID}/documents/${type}/${ID}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
