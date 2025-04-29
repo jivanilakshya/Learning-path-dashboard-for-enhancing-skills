@@ -54,12 +54,14 @@ export default function AdminLogin() {
       const responesData = await response.json()
       setErr(responesData.message);
       const userid = responesData.data.admin._id
+      const accessToken = responesData.data.Accesstoken // Get the access token from response
  
       // Handle response
       if (response.ok) {
           console.log(response); 
-        
-       navigate(`/admin/${userid}`)
+          // Store the token in localStorage
+          localStorage.setItem("Accesstoken", accessToken);
+          navigate(`/admin/${userid}`)
       } else if (response.status === 401) {
         // Incorrect password
         setErrors({ password: responesData.message || "Incorrect password" });

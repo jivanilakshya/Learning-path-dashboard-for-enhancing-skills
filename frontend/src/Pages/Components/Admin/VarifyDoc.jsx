@@ -13,18 +13,17 @@ function VarifyDoc() {
 
     const Approval = async (id, type, approve, email) => {
         try {
-          const token = localStorage.getItem("Accesstoken"); // ✅ Ensure token is retrieved
-      
-          console.log("Token:", token); // ✅ Debugging: Check token value before request
+          const token = localStorage.getItem("Accesstoken");
       
           if (!token) {
             console.log("❌ No Auth Token Found");
+            navigator('/login');
             return;
           }
       
           const data = {
             Isapproved: approve,
-            remarks: value, // Ensure `value` is defined
+            remarks: value,
             email: email,
           };
       
@@ -34,12 +33,19 @@ function VarifyDoc() {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`, // ✅ Ensure token is sent
+                Authorization: `Bearer ${token}`,
               },
               credentials: "include",
               body: JSON.stringify(data),
             }
           );
+      
+          if (response.status === 401) {
+            // Token expired or invalid
+            localStorage.removeItem("Accesstoken");
+            navigator('/login');
+            return;
+          }
       
           if (!response.ok) {
             const errorResponse = await response.json();
