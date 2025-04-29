@@ -9,14 +9,6 @@ const Admin = () => {
   const { data } = useParams();
   const navigator = useNavigate();
 
-  useEffect(() => {
-    // Check if user is authenticated
-    const token = localStorage.getItem('Accesstoken');
-    if (!token) {
-      navigator('/adminLogin');
-      return;
-    }
-  }, [navigator]);
 
   const [StudentData, setStudentData] = useState([]);
   const [TeacherData, setTeacherData] = useState([]);
