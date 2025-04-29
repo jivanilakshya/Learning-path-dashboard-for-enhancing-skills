@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Login.css";
 import Admin from './Images/Admin.svg'
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Header from '../Home/Header/Header';
 
 export default function AdminLogin() {
@@ -10,12 +10,15 @@ export default function AdminLogin() {
   const [Password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [err, setErr] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate()
 
   // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setErr('');
     
     const data = { username: User, password: Password };
 
@@ -28,28 +31,33 @@ export default function AdminLogin() {
         });
 
         const responesData = await response.json();
-        console.log("Response Data:", responesData);
-        setErr(responesData.message);
+        
+        if (!response.ok) {
+            setErr(responesData.message || 'Login failed. Please try again.');
+            setIsLoading(false);
+            return;
+        }
 
-        if (response.ok && responesData.data && responesData.data.admin) {
+        if (responesData.data && responesData.data.admin) {
             const userid = responesData.data.admin._id;
-            console.log("User ID:", userid);
-
+            
             if (!userid) {
-                console.error("Error: User ID is undefined!");
+                setErr('Invalid user data received');
+                setIsLoading(false);
                 return;
             }
 
-            // ✅ Store token correctly
             localStorage.setItem("Accesstoken", responesData.data.Accesstoken);
-            console.log("Token saved:", responesData.data.Accesstoken);
-
-            // ✅ Navigate after storing the token
             navigate(`/admin/${userid}`);
+        } else {
+            setErr('Invalid response from server');
         }
       
     } catch (error) {
         console.error("Login error:", error);
+        setErr('Network error. Please try again later.');
+    } finally {
+        setIsLoading(false);
     }
 };
   
@@ -101,8 +109,12 @@ export default function AdminLogin() {
 
             {/* btns */}
             <div className="btns">
-              <button type="submit" className="btns-1">
-                Log In
+              <button 
+                type="submit" 
+                className="btns-1"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Logging in...' : 'Log In'}
               </button>
             </div>
             {errors.general && (
