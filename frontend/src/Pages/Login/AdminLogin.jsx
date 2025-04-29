@@ -59,17 +59,8 @@ export default function AdminLogin() {
           return;
         }
 
-        // Store token correctly
-        if (responseData.data.Accesstoken) {
-          localStorage.setItem("Accesstoken", responseData.data.Accesstoken);
-          console.log("Token stored successfully");
-        } else {
-          setErr("No token received from server");
-          setIsLoading(false);
-          return;
-        }
-
-        // Navigate after successful token storage
+        // Store token and navigate
+        localStorage.setItem("Accesstoken", responseData.data.Accesstoken);
         navigate(`/admin/${userid}`);
       } else {
         setErr("Invalid response from server");
