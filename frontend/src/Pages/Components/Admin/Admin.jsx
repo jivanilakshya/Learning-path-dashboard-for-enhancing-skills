@@ -16,17 +16,34 @@ const Admin = () => {
   const [allmsg, setAllMsg] = useState(null);
   const [open, setOpen] = useState(false);
 
+  // Function to get token with validation
+  const getToken = () => {
+    const token = localStorage.getItem("Accesstoken");
+    if (!token) {
+      navigator('/adminLogin');
+      throw new Error('No token found');
+    }
+    return token;
+  };
+
   useEffect(()=>{
     const getAllMsg = async () => {
       try {
-        const token = localStorage.getItem("Accesstoken");
+        const token = getToken();
         const response = await fetch(`https://shiksharthee.onrender.com/api/admin/messages/all`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+            "Authorization": token // Remove 'Bearer ' prefix
           },
+          credentials: "include"
         });
+
+        if (response.status === 401) {
+          localStorage.removeItem("Accesstoken");
+          navigator('/adminLogin');
+          return;
+        }
 
         if (!response.ok) {
           throw new Error('Failed to fetch messages');
@@ -44,7 +61,7 @@ const Admin = () => {
 
   const Approval = async(ID, type, approve)=>{
     try {
-      const token = localStorage.getItem("Accesstoken");
+      const token = getToken();
       const data = {
         Isapproved: approve
       };
@@ -53,10 +70,17 @@ const Admin = () => {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          "Authorization": token // Remove 'Bearer ' prefix
         },
+        credentials: "include",
         body: JSON.stringify(data),
       });
+
+      if (response.status === 401) {
+        localStorage.removeItem("Accesstoken");
+        navigator('/adminLogin');
+        return;
+      }
 
       if (!response.ok) {
         throw new Error('Failed to update approval status');
@@ -80,14 +104,21 @@ const Admin = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const token = localStorage.getItem("Accesstoken");
+        const token = getToken();
         const response = await fetch(`https://shiksharthee.onrender.com/api/admin/${data}/approve`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+            "Authorization": token // Remove 'Bearer ' prefix
           },
+          credentials: "include"
         });
+
+        if (response.status === 401) {
+          localStorage.removeItem("Accesstoken");
+          navigator('/adminLogin');
+          return;
+        }
 
         if (!response.ok) {
           throw new Error("Failed to fetch data");
