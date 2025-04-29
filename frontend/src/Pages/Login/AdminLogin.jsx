@@ -17,43 +17,65 @@ export default function AdminLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Client-side validation
+    const newErrors = {};
+
+    if (!User.trim()) {
+        newErrors.User = "User Name is required";
+    }
+  
+    if (!Password.trim()) {
+      newErrors.password = "Password is required";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     const data = { username: User, password: Password };
 
     try {
-        const response = await fetch(`https://shiksharthee.onrender.com/api/admin/login`, {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-        });
+      const response = await fetch(`https://shiksharthee.onrender.com/api/admin/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: { 
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data),
+      });
 
-        const responesData = await response.json();
-        console.log("Response Data:", responesData);
-        setErr(responesData.message);
-
-        if (response.ok && responesData.data && responesData.data.admin) {
-            const userid = responesData.data.admin._id;
-            console.log("User ID:", userid);
-
-            if (!userid) {
-                console.error("Error: User ID is undefined!");
-                return;
-            }
-
-            // ✅ Store token correctly
-            localStorage.setItem("Accesstoken", responesData.data.Accesstoken);
-            console.log("Token saved:", responesData.data.Accesstoken);
-
-            // ✅ Navigate after storing the token
-            navigate(`/admin/${userid}`);
-        }
+      const responesData = await response.json();
       
-    } catch (error) {
-        console.error("Login error:", error);
-    }
-};
-  
+      if (!response.ok) {
+        setErr(responesData.message || "Login failed");
+        return;
+      }
 
+      if (responesData.data && responesData.data.admin) {
+        const userid = responesData.data.admin._id;
+        const token = responesData.data.Accesstoken;
+
+        if (!userid || !token) {
+          setErr("Login failed: Missing user data");
+          return;
+        }
+
+        // Store token and user ID
+        localStorage.setItem("Accesstoken", token);
+        localStorage.setItem("adminId", userid);
+        console.log("Token and user ID saved");
+
+        // Navigate after storing the token
+        navigate(`/admin/${userid}`);
+      } else {
+        setErr("Invalid response from server");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setErr("An error occurred during login");
+    }
+  };
 
   return (
     <>

@@ -43,6 +43,7 @@ const Admin = () => {
       const token = localStorage.getItem("Accesstoken");
       if (!token) {
         console.error("No authentication token found");
+        navigator('/adminLogin');
         return;
       }
 
@@ -56,8 +57,17 @@ const Admin = () => {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
+        credentials: "include",
         body: JSON.stringify(data),
       });
+
+      if (response.status === 401) {
+        console.error("Unauthorized: Token may be invalid or expired");
+        localStorage.removeItem("Accesstoken");
+        localStorage.removeItem("adminId");
+        navigator('/adminLogin');
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("Failed to approve/reject");
@@ -65,11 +75,14 @@ const Admin = () => {
 
       if(type == "student"){
         setStudentData(pre => pre.filter((pre) => pre._id !== ID));
+
       }else if(type == "teacher"){
         setTeacherData(pre => pre.filter((pre) => pre._id !== ID));
+
       }
 
     } catch (error) {
+      console.error("Error in approval:", error);
       setErrors(error.message);
     }
   }
@@ -85,6 +98,7 @@ const Admin = () => {
         const token = localStorage.getItem("Accesstoken");
         if (!token) {
           console.error("No authentication token found");
+          navigator('/adminLogin');
           return;
         }
 
@@ -94,22 +108,40 @@ const Admin = () => {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
           },
+          credentials: "include"
         });
+
+        if (response.status === 401) {
+          console.error("Unauthorized: Token may be invalid or expired");
+          localStorage.removeItem("Accesstoken");
+          localStorage.removeItem("adminId");
+          navigator('/adminLogin');
+          return;
+        }
 
         if (!response.ok) {
           throw new Error("Failed to fetch data");
-        } else {
-          const result = await response.json();
-          setStudentData(result.data.studentsforApproval);
-          setTeacherData(result.data.teachersforApproval);
-          setAdminID(result.data.admin._id);
         }
+
+        const result = await response.json();
+        setStudentData(result.data.studentsforApproval);
+        setTeacherData(result.data.teachersforApproval);
+        setAdminID(result.data.admin._id);
       } catch (err) {
-        console.log(err.message);
+        console.error("Error fetching data:", err);
+        setErrors(err.message);
       }
     };
     getData();
-  }, []);
+  }, [data, navigator]);
+
+
+
+  
+
+
+
+
 
 
 
@@ -132,10 +164,10 @@ const Admin = () => {
         </div>
         </NavLink>
         <div className="flex items-center">
-          {/* <div className="relative mr-4">
+          <div className="relative mr-4">
             <IoIosNotificationsOutline className="h-8 w-8 text-white" />
             <span className="absolute top-1 right-1 h-3 w-3 bg-red-500 rounded-full"></span>
-          </div> */}
+          </div>
           <button onClick={() => navigator('/')} className="bg-blue-500 text-white px-4 py-2 rounded-md">
             Logout
           </button>
