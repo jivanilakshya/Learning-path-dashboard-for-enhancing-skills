@@ -21,7 +21,7 @@ const Admin = () => {
   useEffect(()=>{
     const getAllMsg = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/messages/all`, {
+        const response = await fetch(`https://shiksharthee.onrender.com/api/admin/messages/all`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
