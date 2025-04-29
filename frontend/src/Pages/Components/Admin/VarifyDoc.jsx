@@ -11,92 +11,43 @@ function VarifyDoc() {
         setValue(event.target.value);
     };
 
-    const Approval = async (id, type, approve, email) => {
+    const Approval = async(id, type, approve, email)=>{
         try {
-          const token = localStorage.getItem("Accesstoken");
-      
-          if (!token) {
-            console.log("❌ No Auth Token Found");
-            navigator('/login');
-            return;
-          }
-      
           const data = {
-            Isapproved: approve,
-            remarks: value,
+            Isapproved : approve,
+            remarks : value,
             email: email,
-          };
-      
-          const response = await fetch(
-            `https://shiksharthee.onrender.com/api/admin/${adminID}/approve/${type}/${id}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              credentials: "include",
-              body: JSON.stringify(data),
-            }
-          );
-      
-          if (response.status === 401) {
-            // Token expired or invalid
-            localStorage.removeItem("Accesstoken");
-            navigator('/login');
-            return;
           }
-      
-          if (!response.ok) {
-            const errorResponse = await response.json();
-            throw new Error(`❌ Approval Error: ${errorResponse.message}`);
-          }
-      
+    
+          const response = await fetch(`/api/admin/${adminID}/approve/${type}/${id}`, {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+        
           navigator(`/admin/${adminID}`);
+    
         } catch (error) {
           console.log(error.message);
         }
-      };
-      
+      }
 
-      useEffect(() => {
+    useEffect(() => {
         const getData = async () => {
             try {
-                const token = localStorage.getItem("Accesstoken"); // Assuming it's stored here
-                console.log("1");
-                console.log("token", token);
-    
-                const response = await fetch(`https://shiksharthee.onrender.com/api/admin/${adminID}/documents/${type}/${ID}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`, // Ensure the token is included
-                    },
-                    credentials: "include",
-                });
-                console.log("r", response);
-    
-                if (!response.ok) {
-                    const errorResponse = await response.json();
-                    console.error("API Error Response:", errorResponse);
-                    throw new Error(`HTTP error! Status: ${response.status} - ${errorResponse.message}`);
-                }
-    
-                const data = await response.json();
-                console.log("Response:", data);
-    
-                // Update the state with the fetched data
-                setData(data.data);  // Assuming the response has a `data` field that contains the actual data
-    
-            } catch (error) {
-                console.error("Error fetching data:", error.message);
+                const docData = await fetch(`/api/admin/${adminID}/documents/${type}/${ID}`);
+                const response = await docData.json();
+                setData(response.data);
+                console.log(response.data);
+            } catch (err) {
+                console.log(err.message);
             }
         };
-    
         getData();
-    }, [adminID, ID]);
-    
-    
+    }, []);
+
     return (
         <>
             <nav className="h-16 sm:h-20 md:h-24 lg:h-24  w-full bg-[#042439] flex justify-between items-center px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
@@ -199,7 +150,7 @@ function VarifyDoc() {
                                 Reupload !
                                 </div>
                             </div>
-                        </div>  
+                        </div>
                     </div>
                 </>
             )}

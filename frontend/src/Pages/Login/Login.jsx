@@ -46,15 +46,16 @@ export default function Login() {
     };
 
     try {
-      const response = await fetch(`https://shiksharthee.onrender.com/api/${userType}/login`, {
-        method: "POST",
+      // Send data to backend (you need to implement this part)
+      const response = await fetch(`/api/${userType}/login`, {
+        method: 'POST',
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
-    
+
       const responesData = await response.json()
       if(responesData.message != 'Logged in'){
         setErr(responesData.message);

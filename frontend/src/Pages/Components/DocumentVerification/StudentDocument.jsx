@@ -15,7 +15,7 @@ const StudentDocument = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await fetch(`https://shiksharthee.onrender.com/api/student/StudentDocument/${Data}`, {
+        const response = await fetch(`/api/student/StudentDocument/${Data}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -81,7 +81,7 @@ const StudentDocument = () => {
       // }
     
       try {
-        let response = await fetch(`https://shiksharthee.onrender.com/api/student/verification/${Data}`, {
+        let response = await fetch(`/api/student/verification/${Data}`, {
           method: "POST",
           body: formDataObj,
           credentials: "include",
@@ -94,7 +94,7 @@ const StudentDocument = () => {
           console.log("JWT expired. Attempting to refresh token...");
     
           // Attempt to refresh token
-          const refreshResponse = await fetch(`https://shiksharthee.onrender.com/api/refresh-token`, {
+          const refreshResponse = await fetch(`/api/refresh-token`, {
             method: "POST",
             credentials: "include",
           });
@@ -105,7 +105,7 @@ const StudentDocument = () => {
             console.log("Token refreshed successfully.");
             
             // Retry the original request with the new token
-            response = await fetch(`https://shiksharthee.onrender.com/api/student/verification/${Data}`, {
+            response = await fetch(`/api/student/verification/${Data}`, {
               method: "POST",
               body: formDataObj,
               credentials: "include",

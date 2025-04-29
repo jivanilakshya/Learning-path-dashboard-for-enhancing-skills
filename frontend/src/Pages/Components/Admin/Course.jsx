@@ -44,7 +44,7 @@ const Course = () => {
   useEffect(() => {
     const fetchCourseRequests = async () => {
       try {
-        const response = await axios.get(`/api/admin/${data}/approve/course`);
+        const response = await axios.get(`cf=d /api/admin/${data}/approve/course`);
         console.log("dtat",response.data.data);
         setCourseReq(response.data.data);
       } catch (error) {

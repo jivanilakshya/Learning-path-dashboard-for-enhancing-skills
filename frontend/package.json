@@ -1,7 +1,7 @@
 {
   "name": "fontent",
   "private": true,
-  "proxy": "https://shiksharthee.onrender.com",
+  "proxy": "http://localhost:5173",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

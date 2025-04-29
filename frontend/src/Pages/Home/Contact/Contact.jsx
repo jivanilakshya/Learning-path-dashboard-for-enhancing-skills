@@ -15,7 +15,7 @@ function Contact() {
     }else if((!/\S+@\S+\.\S+/.test(email))){
       alert("Enter a valid email!")
     }else{
-      const data = await fetch(`https://shiksharthee.onrender.com/api/admin/contact-us`,{
+      const data = await fetch(`/api/admin/contact-us`,{
         method: 'POST',
         credentials: "include",
         headers: {
