@@ -16,15 +16,7 @@ const Admin = () => {
   const [allmsg, setAllMsg] = useState([]);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("Accesstoken");
-    if (!token) {
-      navigator('/adminLogin');
-      return;
-    }
-  }, [navigator]);
-
-  useEffect(() => {
+  useEffect(()=>{
     const getAllMsg = async () => {
       try {
         const token = localStorage.getItem("Accesstoken");
@@ -41,34 +33,33 @@ const Admin = () => {
           },
         });
 
-        if (response.status === 401) {
-          localStorage.removeItem("Accesstoken");
-          navigator('/adminLogin');
-          return;
-        }
-
         if (!response.ok) {
           throw new Error('Failed to fetch messages');
         }
 
-        const responseData = await response.json();
-        setAllMsg(responseData.data || []);
+        const result = await response.json();
+        if (result.data) {
+          setAllMsg(result.data);
+        }
       } catch (err) {
         console.error("Error fetching messages:", err);
         setErrors(err.message);
       }
     };
     getAllMsg();
-  }, [navigator]);
+  },[navigator]);
 
-  const Approval = async(ID, type, approve) => {
+  const handleCourseRequests = () => {
+    if (!data) {
+      setErrors("Admin ID not found");
+      return;
+    }
+    navigator(`/admin/course/${data}`);
+  };
+
+  const Approval = async(ID, type, approve)=>{
     try {
       const token = localStorage.getItem("Accesstoken");
-      if (!token) {
-        navigator('/adminLogin');
-        return;
-      }
-
       const data = {
         Isapproved: approve
       };
@@ -81,12 +72,6 @@ const Admin = () => {
         },
         body: JSON.stringify(data),
       });
-
-      if (response.status === 401) {
-        localStorage.removeItem("Accesstoken");
-        navigator('/adminLogin');
-        return;
-      }
 
       if (!response.ok) {
         throw new Error('Failed to update approval status');
@@ -111,11 +96,6 @@ const Admin = () => {
     const getData = async () => {
       try {
         const token = localStorage.getItem("Accesstoken");
-        if (!token) {
-          navigator('/adminLogin');
-          return;
-        }
-
         const response = await fetch(`https://shiksharthee.onrender.com/api/admin/${data}/approve`, {
           method: "POST",
           headers: {
@@ -124,19 +104,13 @@ const Admin = () => {
           },
         });
 
-        if (response.status === 401) {
-          localStorage.removeItem("Accesstoken");
-          navigator('/adminLogin');
-          return;
-        }
-
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
 
         const result = await response.json();
-        setStudentData(result.data.studentsforApproval || []);
-        setTeacherData(result.data.teachersforApproval || []);
+        setStudentData(result.data.studentsforApproval);
+        setTeacherData(result.data.teachersforApproval);
         setAdminID(result.data.admin._id);
       } catch (err) {
         console.error("Error fetching admin data:", err);
@@ -144,23 +118,23 @@ const Admin = () => {
       }
     };
     getData();
-  }, [data, navigator]);
+  }, [data]);
 
   return (
     <div className="h-[100vh]">
       {/* Navbar */}
       <nav className="h-16 sm:h-20 md:h-24 lg:h-24  w-full bg-[#042439] flex justify-between items-center px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         <NavLink to='/'>
-        <div className="flex items-center gap-4">
-          <img
-            src={logo}
-            alt="logo"
-            className="w-14 sm:h-12 md:h-14 lg:h-16 xl:h-18"
-          />
-          <h1 className="text-2xl text-[#4E84C1] font-bold">
-            Shiksharthee
-          </h1>
-        </div>
+          <div className="flex items-center gap-4">
+            <img
+              src={logo}
+              alt="logo"
+              className="w-14 sm:h-12 md:h-14 lg:h-16 xl:h-18"
+            />
+            <h1 className="text-2xl text-[#4E84C1] font-bold">
+              Shiksharthee
+            </h1>
+          </div>
         </NavLink>
         <div className="flex items-center">
           {/* <div className="relative mr-4">
@@ -179,27 +153,26 @@ const Admin = () => {
           All New Request
         </h1>
 
-        <div onClick={()=> setOpen(prev => !prev)} className=" absolute right-10 top-[6.5rem] text-center cursor-pointer">
-            <h4 className="text-white bg-green-800 p-4 w-32">Messages</h4>
+        <div onClick={() => setOpen(prev => !prev)} className="absolute right-10 top-[6.5rem] text-center cursor-pointer">
+          <h4 className="text-white bg-green-800 p-4 w-32">Messages</h4>
         </div>
         
-        <div onClick={()=>navigator(`/admin/course/${data}`)} className=" absolute right-52 top-[6.5rem] text-center cursor-pointer">
-            <h4 className="text-white bg-blue-800 p-4 w-44">Course Requests</h4>
+        <div onClick={handleCourseRequests} className="absolute right-52 top-[6.5rem] text-center cursor-pointer">
+          <h4 className="text-white bg-blue-800 p-4 w-44">Course Requests</h4>
         </div>
 
         {open && (
           <div className="mt-3 w-[30rem] absolute right-10 bg-gray-700 text-gray-100 p-5">
-            {allmsg.map((msg,index) => (
+            {allmsg.length > 0 ? allmsg.map((msg, index) => (
               <div key={index} className="bg-gray-600 mb-5 rounded-sm p-2">
-                <p className="text-black">Name : <span className="text-white">{msg.name}</span></p>
-                <p className=" text-light-blue-600"><span className="text-black">Email : </span>{msg.email}</p>
-                <p><span className="text-black">Message : </span>{msg.message}</p>
+                <p className="text-black">Name: <span className="text-white">{msg.name}</span></p>
+                <p className="text-light-blue-600"><span className="text-black">Email: </span>{msg.email}</p>
+                <p><span className="text-black">Message: </span>{msg.message}</p>
               </div>
-            ))}
-
+            )) : <p className="text-white">No messages available</p>}
           </div>
         )}
-</div>
+      </div>
        
       
       <div className="flex items-start justify-center gap-20">
