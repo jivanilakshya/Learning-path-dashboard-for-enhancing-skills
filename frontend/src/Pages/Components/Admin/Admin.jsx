@@ -40,25 +40,33 @@ const Admin = () => {
 
   const Approval = async(ID, type, approve)=>{
     try {
+      const token = localStorage.getItem("Accesstoken");
+      if (!token) {
+        console.error("No authentication token found");
+        return;
+      }
+
       const data = {
         Isapproved : approve
       }
 
-      const response = await fetch(`/api/admin/${adminID}/approve/${type}/${ID}`, {
+      const response = await fetch(`https://shiksharthee.onrender.com/api/admin/${adminID}/approve/${type}/${ID}`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(data),
       });
 
-   
+      if (!response.ok) {
+        throw new Error("Failed to approve/reject");
+      }
+
       if(type == "student"){
         setStudentData(pre => pre.filter((pre) => pre._id !== ID));
-
       }else if(type == "teacher"){
         setTeacherData(pre => pre.filter((pre) => pre._id !== ID));
-
       }
 
     } catch (error) {
@@ -74,10 +82,17 @@ const Admin = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await fetch(`/api/admin/${data}/approve`, {
+        const token = localStorage.getItem("Accesstoken");
+        if (!token) {
+          console.error("No authentication token found");
+          return;
+        }
+
+        const response = await fetch(`https://shiksharthee.onrender.com/api/admin/${data}/approve`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
           },
         });
 
@@ -85,7 +100,6 @@ const Admin = () => {
           throw new Error("Failed to fetch data");
         } else {
           const result = await response.json();
-         
           setStudentData(result.data.studentsforApproval);
           setTeacherData(result.data.teachersforApproval);
           setAdminID(result.data.admin._id);
