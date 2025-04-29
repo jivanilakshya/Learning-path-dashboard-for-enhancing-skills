@@ -10,7 +10,7 @@ function Courses() {
   const teachersList = async(sub)=>{
     setLoading(true);
 
-    const response = await fetch(`https://shiksharthee.onrender.com/api/course/...`, {
+    const response = await fetch(`https://shiksharthee.onrender.com/api/course/${sub}`, {
       method: 'GET',
       credentials: "include",
       headers: {
