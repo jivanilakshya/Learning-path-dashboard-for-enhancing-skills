@@ -9,6 +9,7 @@ const Admin = () => {
   const { data } = useParams();
   const navigator = useNavigate();
 
+
   const [StudentData, setStudentData] = useState([]);
   const [TeacherData, setTeacherData] = useState([]);
   const [adminID, setAdminID] = useState(null);
@@ -16,94 +17,89 @@ const Admin = () => {
   const [allmsg, setAllMsg] = useState(null);
   const [open, setOpen] = useState(false);
 
+
   useEffect(()=>{
     const getAllMsg = async () => {
       try {
-        const token = localStorage.getItem("Accesstoken");
-        const response = await fetch(`https://shiksharthee.onrender.com/api/admin/messages/all`, {
+        const response = await fetch(`/api/admin/messages/all`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
           },
         });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch messages');
-        }
-
         const data = await response.json();
-        setAllMsg(data.data);
+        setAllMsg(data.data)
+
       } catch (err) {
-        console.error("Error fetching messages:", err);
-        setErrors(err.message);
+        console.log(err.message);
       }
     };
     getAllMsg();
-  },[]);
+  },[])
 
   const Approval = async(ID, type, approve)=>{
     try {
-      const token = localStorage.getItem("Accesstoken");
       const data = {
-        Isapproved: approve
-      };
+        Isapproved : approve
+      }
 
-      const response = await fetch(`https://shiksharthee.onrender.com/api/admin/${adminID}/approve/${type}/${ID}`, {
+      const response = await fetch(`/api/admin/${adminID}/approve/${type}/${ID}`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to update approval status');
+   
+      if(type == "student"){
+        setStudentData(pre => pre.filter((pre) => pre._id !== ID));
+
+      }else if(type == "teacher"){
+        setTeacherData(pre => pre.filter((pre) => pre._id !== ID));
+
       }
 
-      if(type === "student"){
-        setStudentData(pre => pre.filter((pre) => pre._id !== ID));
-      } else if(type === "teacher"){
-        setTeacherData(pre => pre.filter((pre) => pre._id !== ID));
-      }
     } catch (error) {
-      console.error("Approval error:", error);
       setErrors(error.message);
     }
-  };
+  }
 
-  const docDetails = (type, ID) => {
+  const docDetails = async (type, ID) =>{
     navigator(`/VarifyDoc/${type}/${adminID}/${ID}`);
-  };
+  }
+
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const token = localStorage.getItem("Accesstoken");
-        const response = await fetch(`https://shiksharthee.onrender.com/api/admin/${data}/approve`, {
+        const response = await fetch(`/api/admin/${data}/approve`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
           },
         });
 
         if (!response.ok) {
           throw new Error("Failed to fetch data");
+        } else {
+          const result = await response.json();
+         
+          setStudentData(result.data.studentsforApproval);
+          setTeacherData(result.data.teachersforApproval);
+          setAdminID(result.data.admin._id);
         }
-
-        const result = await response.json();
-        setStudentData(result.data.studentsforApproval);
-        setTeacherData(result.data.teachersforApproval);
-        setAdminID(result.data.admin._id);
       } catch (err) {
-        console.error("Error fetching admin data:", err);
-        setErrors(err.message);
+        console.log(err.message);
       }
     };
     getData();
-  }, [data]);
+  }, []);
+
+
+
+
 
   return (
     <div className="h-[100vh]">
