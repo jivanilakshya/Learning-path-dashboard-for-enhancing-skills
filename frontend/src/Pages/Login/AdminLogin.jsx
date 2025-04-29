@@ -16,7 +16,7 @@ export default function AdminLogin() {
   // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Client-side validation
     const newErrors = {};
 
@@ -29,51 +29,53 @@ export default function AdminLogin() {
     }
 
     if (Object.keys(newErrors).length > 0) {
+      // Update the errors state and prevent form submission
       setErrors(newErrors);
       return;
     }
 
-    const data = { username: User, password: Password };
+    // Prepare data object to send to the backend
+    const data = {
+      username: User,
+      password: Password,
+    };
 
     try {
-      const response = await fetch(`https://shiksharthee.onrender.com/api/admin/login`, {
-        method: "POST",
+      // Send data to backend
+      const response = await fetch(`/api/admin/login`, {
+        method: 'POST',
         credentials: "include",
-        headers: { 
-          "Content-Type": "application/json"
+        headers: {
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
 
-      const responesData = await response.json();
-      
-      if (!response.ok) {
-        setErr(responesData.message || "Login failed");
-        return;
-      }
+      const responesData = await response.json()
+      setErr(responesData.message);
+      const userid = responesData.data.admin._id
+ 
+      // Handle response
+      if (response.ok) {
+          console.log(response); 
+        
+       navigate(`/admin/${userid}`)
+      } else if (response.status === 401) {
+        // Incorrect password
+        setErrors({ password: responesData.message || "Incorrect password" });
+      } else if (response.status === 403) {
+        // Account locked, disabled, or other authentication issues
 
-      if (responesData.data && responesData.data.admin) {
-        const userid = responesData.data.admin._id;
-        const token = responesData.data.Accesstoken;
-
-        if (!userid || !token) {
-          setErr("Login failed: Missing user data");
-          return;
-        }
-
-        // Store token and user ID
-        localStorage.setItem("Accesstoken", token);
-        localStorage.setItem("adminId", userid);
-        console.log("Token and user ID saved");
-
-        // Navigate after storing the token
-        navigate(`/admin/${userid}`);
+        setErrors({ general: responesData.message || "Login failed" });
+      } else if (response.status === 400) {
+        setErrors({ general: responesData.message || "Admin does not exist" });
       } else {
-        setErr("Invalid response from server");
+        // Other unexpected errors
+        setErrors({ general: "An unexpected error occurred" });
       }
     } catch (error) {
-      console.error("Login error:", error);
-      setErr("An error occurred during login");
+   
+      setErrors(error.message);
     }
   };
 

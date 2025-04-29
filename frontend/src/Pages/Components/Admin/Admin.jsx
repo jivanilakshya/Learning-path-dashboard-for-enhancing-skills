@@ -21,7 +21,7 @@ const Admin = () => {
   useEffect(()=>{
     const getAllMsg = async () => {
       try {
-        const response = await fetch(`https://shiksharthee.onrender.com/api/admin/messages/all`, {
+        const response = await fetch(`/api/admin/messages/all`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -40,39 +40,19 @@ const Admin = () => {
 
   const Approval = async(ID, type, approve)=>{
     try {
-      const token = localStorage.getItem("Accesstoken");
-      if (!token) {
-        console.error("No authentication token found");
-        navigator('/adminLogin');
-        return;
-      }
-
       const data = {
         Isapproved : approve
       }
 
-      const response = await fetch(`https://shiksharthee.onrender.com/api/admin/${adminID}/approve/${type}/${ID}`, {
+      const response = await fetch(`/api/admin/${adminID}/approve/${type}/${ID}`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
         },
-        credentials: "include",
         body: JSON.stringify(data),
       });
 
-      if (response.status === 401) {
-        console.error("Unauthorized: Token may be invalid or expired");
-        localStorage.removeItem("Accesstoken");
-        localStorage.removeItem("adminId");
-        navigator('/adminLogin');
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error("Failed to approve/reject");
-      }
-
+   
       if(type == "student"){
         setStudentData(pre => pre.filter((pre) => pre._id !== ID));
 
@@ -82,7 +62,6 @@ const Admin = () => {
       }
 
     } catch (error) {
-      console.error("Error in approval:", error);
       setErrors(error.message);
     }
   }
@@ -95,45 +74,28 @@ const Admin = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const token = localStorage.getItem("Accesstoken");
-        if (!token) {
-          console.error("No authentication token found");
-          navigator('/adminLogin');
-          return;
-        }
-
-        const response = await fetch(`https://shiksharthee.onrender.com/api/admin/${data}/approve`, {
+        const response = await fetch(`/api/admin/${data}/approve`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
           },
-          credentials: "include"
         });
-
-        if (response.status === 401) {
-          console.error("Unauthorized: Token may be invalid or expired");
-          localStorage.removeItem("Accesstoken");
-          localStorage.removeItem("adminId");
-          navigator('/adminLogin');
-          return;
-        }
 
         if (!response.ok) {
           throw new Error("Failed to fetch data");
+        } else {
+          const result = await response.json();
+         
+          setStudentData(result.data.studentsforApproval);
+          setTeacherData(result.data.teachersforApproval);
+          setAdminID(result.data.admin._id);
         }
-
-        const result = await response.json();
-        setStudentData(result.data.studentsforApproval);
-        setTeacherData(result.data.teachersforApproval);
-        setAdminID(result.data.admin._id);
       } catch (err) {
-        console.error("Error fetching data:", err);
-        setErrors(err.message);
+        console.log(err.message);
       }
     };
     getData();
-  }, [data, navigator]);
+  }, []);
 
 
 
