@@ -100,7 +100,7 @@ Contributions are welcome! Please follow these steps:
 
 ## 🔗 **Links**
 
-- **Live Demo:** [Your Live Link](#) *(If deployed)*
+- **Live Demo:** [shiksharthe.vercel.app](https://shiksharthe.vercel.app)
 - **GitHub Repo:** [Learning Path Dashboard](https://github.com/jivanilakshya/Learning-path-dashboard-for-enhancing-skills)
 
 ---
