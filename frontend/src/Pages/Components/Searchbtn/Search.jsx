@@ -77,32 +77,14 @@ function Search() {
   
 
   const SearchTeacher = async (sub) => {
-    try {
-      const subject = sub.toLowerCase();
-      const response = await fetch(`https://shiksharthee.onrender.com/api/course/${subject}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-
-      const data = await response.json();
-      if (data.statusCode === 200) {
-        setCourse(data.data);
-      } else {
-        console.error('Error:', data.message);
-        setCourse([]);
-      }
-      setData("");
-    } catch (error) {
-      console.error('Search error:', error);
-      setCourse([]);
-      setData("");
+    const subject = sub.toLowerCase();
+    const Data = await fetch(`https://shiksharthee.onrender.com/api/course/${subject}`);
+    const response = await Data.json();
+    if (response.statusCode === 200) {
+      setCourse(response.data);
+      // console.log(response.data);
     }
+    setData("");
   };
 
   const handleEnroll = async (courseName, id) => {
