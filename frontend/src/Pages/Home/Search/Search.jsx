@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, useParams } from 'react-router-dom';
 import Header from '../Header/Header'
-
 function search() {
     const { subject } = useParams();
     const [data, setData] = useState(subject);
@@ -23,7 +22,7 @@ function search() {
     
     let SearchTeacher = async()=>{
         let Subject = data.toLowerCase();
-        let Data = await fetch(`/api/course/${Subject}`)
+        let Data = await fetch(`${import.meta.env.VITE_API_URL}/api/course/${Subject}`)
         let response = await Data.json();
         if(response.statusCode == 200){
         setCourse(response.data)

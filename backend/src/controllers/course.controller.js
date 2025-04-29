@@ -523,9 +523,3 @@ const canStudentEnroll = asyncHandler(async(req,res)=>{
 })
 
 export {getCourse, getcourseTeacher, addCourseTeacher, addCourseStudent, enrolledcourseSTD, enrolledcourseTeacher, addClass, stdEnrolledCoursesClasses, teacherEnrolledCoursesClasses, canStudentEnroll} 
-
-
-
-
-
-

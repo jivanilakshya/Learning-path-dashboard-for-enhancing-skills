@@ -78,7 +78,7 @@ function Search() {
 
   const SearchTeacher = async (sub) => {
     const subject = sub.toLowerCase();
-    const Data = await fetch(`https://shiksharthee.onrender.com/api/course/${subject}`);
+    const Data = await fetch(`/api/course/${subject}`);
     const response = await Data.json();
     if (response.statusCode === 200) {
       setCourse(response.data);
