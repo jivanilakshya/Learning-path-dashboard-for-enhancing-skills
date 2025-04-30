@@ -6,6 +6,8 @@ import logo from '../../Images/logo.svg'
 
 const Course = () => {
   const [courseReq, setCourseReq] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const { data } = useParams();
   const navigator = useNavigate();
@@ -44,15 +46,26 @@ const Course = () => {
   useEffect(() => {
     const fetchCourseRequests = async () => {
       try {
-        const response = await axios.get(`cf=d /api/admin/${data}/approve/course`);
-        console.log("dtat",response.data.data);
-        setCourseReq(response.data.data);
+        setLoading(true);
+        setError(null);
+        const response = await axios.get(`/api/admin/${data}/approve/course`);
+        if (response.data && response.data.data) {
+          setCourseReq(response.data.data);
+        } else {
+          setCourseReq([]);
+        }
       } catch (error) {
         console.error('Error fetching course requests:', error);
+        setError('Failed to fetch course requests');
+        setCourseReq([]);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchCourseRequests();
+    if (data) {
+      fetchCourseRequests();
+    }
   }, [data]);
 
 
@@ -159,13 +172,12 @@ const Course = () => {
 
   return (
     <div className='h-[100vh]'>
-           {/* Navbar */}
-      <nav className="h-16 sm:h-20 md:h-24 lg:h-24  w-full bg-[#042439] flex justify-between items-center px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
-     
+      {/* Navbar */}
+      <nav className="h-16 sm:h-20 md:h-24 lg:h-24 w-full bg-[#042439] flex justify-between items-center px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         <div className="flex items-center gap-4">
           <div className="flex items-center">
-            <h1 onClick={()=>  navigator(`/admin/${data}`)} className="text-lg sm:text-xl md:text-2xl lg:text-3xl  text-blue-700 font-bold font-mono ml-2">
-            ◀ Back
+            <h1 onClick={() => navigator(`/admin/${data}`)} className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-blue-700 font-bold font-mono ml-2">
+              ◀ Back
             </h1>
           </div>
         </div>
@@ -181,22 +193,31 @@ const Course = () => {
         </div>
       </nav>
 
-      {courseReq.length > 0 && (
-        <div className="mt-3  text-gray-100 p-5">
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="text-white text-xl">Loading...</div>
+        </div>
+      ) : error ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="text-red-500 text-xl">{error}</div>
+        </div>
+      ) : courseReq && courseReq.length > 0 ? (
+        <div className="mt-3 text-gray-100 p-5">
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {courseReq.map((req, index) => (
               <div key={index} className="bg-gray-800 p-4 rounded-md shadow-[0_0_10px_white]">
-                <h2 className="text-lg text-yellow-500 font-bold">{req.coursename.toUpperCase()}</h2>
+                <h2 className="text-lg text-yellow-500 font-bold">{req.coursename?.toUpperCase()}</h2>
                 <p className="text-yellow-700 font-semibold">{req.description}</p>
                 <div className="flex items-center mt-2">
                   <p className="text-yellow-300">Enrolled Teacher : </p>
-                  <p className="text-white font-semibold pl-1"> {req.enrolledteacher.Firstname}  {req.enrolledteacher.Lastname}</p>
-                 
+                  <p className="text-white font-semibold pl-1">
+                    {req.enrolledteacher?.Firstname} {req.enrolledteacher?.Lastname}
+                  </p>
                 </div>
-                <div className="flex  flex-col justify-start mt-2">
+                <div className="flex flex-col justify-start mt-2">
                   <p className="text-gray-400 text-xl font-bold mr-2">Timing:</p>
                   <div className="text-white">
-                    {req.schedule.map((scheduleItem, idx) => (
+                    {req.schedule?.map((scheduleItem, idx) => (
                       <div key={idx}>
                         <p className="text-yellow-800">Day: {formatDay(scheduleItem.day)}</p>
                         <p className="text-yellow-300">Start Time: {formatTime(scheduleItem.starttime)}</p>
@@ -212,12 +233,32 @@ const Course = () => {
                   </p>
                 </div>
                 <div className='flex flex-row gap-3 mt-2'>
-                  <button className='text-white bg-green-500'onClick={()=>handleAccept(req._id,{Email:req.enrolledteacher.Email,enrolledteacher:req.enrolledteacher.Firstname})}>Approve</button>
-                  <button className='text-white bg-red-500' onClick={()=>handleReject(req._id,{Email:req.enrolledteacher.Email,enrolledteacher:req.enrolledteacher.Firstname})}>Reject</button>
+                  <button 
+                    className='text-white bg-green-500 px-4 py-2 rounded'
+                    onClick={() => handleAccept(req._id, {
+                      Email: req.enrolledteacher?.Email,
+                      enrolledteacher: req.enrolledteacher?.Firstname
+                    })}
+                  >
+                    Approve
+                  </button>
+                  <button 
+                    className='text-white bg-red-500 px-4 py-2 rounded'
+                    onClick={() => handleReject(req._id, {
+                      Email: req.enrolledteacher?.Email,
+                      enrolledteacher: req.enrolledteacher?.Firstname
+                    })}
+                  >
+                    Reject
+                  </button>
                 </div>
               </div>
             ))}
           </div>
+        </div>
+      ) : (
+        <div className="flex justify-center items-center h-64">
+          <div className="text-white text-xl">No course requests found</div>
         </div>
       )}
     </div>
@@ -225,4 +266,3 @@ const Course = () => {
 };
 
 export default Course;
-

@@ -179,16 +179,6 @@ const TeacherDetailsSchema = new mongoose.Schema({
         required:true,
     },
 
-    SecondarySchool:{
-        type:String,
-        required:true,
-    },
-
-    HigherSchool:{
-        type:String,
-        required:true,
-    },
-
     UGcollege:{
         type:String,
         required:true,
@@ -196,16 +186,6 @@ const TeacherDetailsSchema = new mongoose.Schema({
 
     PGcollege:{
         type:String,
-        required:true,
-    },
-
-    SecondaryMarks:{
-        type:Number,
-        required:true,
-    },
-
-    HigherMarks:{
-        type:Number,
         required:true,
     },
 
@@ -220,16 +200,6 @@ const TeacherDetailsSchema = new mongoose.Schema({
     },
 
     Aadhaar:{
-        type:String,
-        required:true,
-    },
-
-    Secondary:{
-        type:String,
-        required:true,
-    },
-
-    Higher:{
         type:String,
         required:true,
     },

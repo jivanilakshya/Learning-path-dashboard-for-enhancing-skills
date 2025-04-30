@@ -113,14 +113,14 @@ import { log } from "console";
                                 Thank you for joining Shiksharthee! To get started with your learning journey, please verify your email address by clicking the button below.
                             </div>
                             <div class="button-container">
-                                <a href="/api/student/verify?id=${createdStudent_id}" class="verify-button">
+                                <a href="http://localhost:5173/api/student/verify?id=${createdStudent_id}" class="verify-button">
                                     Verify Email Address
                                 </a>
                             </div>
                             <div class="message">
                                 If the button doesn't work, you can copy and paste this link into your browser:<br>
-                                <a href="/api/student/verify?id=${createdStudent_id}" style="color: #3498db; word-break: break-all;">
-                                    /api/student/verify?id=${createdStudent_id}
+                                <a href="http://localhost:5173/api/student/verify?id=${createdStudent_id}" style="color: #3498db; word-break: break-all;">
+                                    http://localhost:5173/api/student/verify?id=${createdStudent_id}
                                 </a>
                             </div>
                         </div>
@@ -325,7 +325,7 @@ import { log } from "console";
                         <img src="https://cdn-icons-png.flaticon.com/128/4436/4436481.png" alt="Success Icon" class="success-icon">
                         <h1 class="success-title">Email Verified Successfully!</h1>
                         <p class="success-message">Thank you for verifying your email address. Your account is now active.</p>
-                        <a href="https://shiksharthe.vercel.app" class="home-button">Return to Homepage</a>
+                        <a href="http://localhost:5173/login" class="home-button">Return to Homepage</a>
                         <div class="footer">
                             <p>© 2024 Shiksharthee. All rights reserved.</p>
                         </div>
@@ -542,7 +542,7 @@ import { log } from "console";
 
     await User.save();
 
-    const resetToken=`${process.env.FRONTEND_URL}/student/forgetpassword/${User.forgetPasswordToken}`
+    const resetToken=`http://localhost:5173/student/forgetpassword/${User.forgetPasswordToken}`
     
     const subject='RESET PASSWORD'
 

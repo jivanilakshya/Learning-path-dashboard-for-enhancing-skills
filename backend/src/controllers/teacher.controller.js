@@ -27,9 +27,11 @@ const verifyEmail = async (Email, Firstname, createdTeacherId) => {
             <p style="margin: 20px;"> Hi ${Firstname}, Please click the button below to verify your E-mail. </p>
             <img src="https://img.freepik.com/free-vector/illustration-e-mail-protection-concept-e-mail-envelope-with-file-document-attach-file-system-security-approved_1150-41788.jpg?size=626&ext=jpg&uid=R140292450&ga=GA1.1.553867909.1706200225&semt=ais" alt="Verification Image" style="width: 100%; height: auto;">
             <br>
-            <a href="/api/teacher/verify?id=${createdTeacherId}">
+            <a href="http://localhost:5173/api/teacher/verify?id=${createdTeacherId}">
                 <button style="background-color: black; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 10px 0; cursor: pointer;">Verify Email</button>
             </a>
+            <p style="margin: 20px;">If the button doesn't work, you can copy and paste this link into your browser:</p>
+            <p style="word-break: break-all; color: blue;">http://localhost:5173/api/teacher/verify?id=${createdTeacherId}</p>
         </div>`
         };
         emailSender.sendMail(mailOptions, function(error) {
@@ -174,7 +176,7 @@ const mailVerified = asyncHandler(async (req, res) => {
                         <img src="https://cdn-icons-png.flaticon.com/128/4436/4436481.png" alt="Success Icon" class="success-icon">
                         <h1 class="success-title">Email Verified Successfully!</h1>
                         <p class="success-message">Thank you for verifying your email address. Your account is now active.</p>
-                        <a href="https://shiksharthe.vercel.app/login" class="home-button">Return to Homepage</a>
+                        <a href="http://localhost:5173/login" class="home-button">Return to Homepage</a>
                         <div class="footer">
                             <p>© 2024 Shiksharthee. All rights reserved.</p>
                         </div>
@@ -288,9 +290,9 @@ const addTeacherDetails = asyncHandler(async(req,res)=>{
         throw new ApiError(400, "unauthroized access")
     }
 
-    const{Phone, Address, Experience, SecondarySchool, HigherSchool,UGcollege, PGcollege, SecondaryMarks, HigherMarks, UGmarks, PGmarks} = req.body
+    const{Phone, Address, Experience, UGcollege, PGcollege, UGmarks, PGmarks} = req.body
 
-    if([Phone, Address, Experience, SecondarySchool, HigherSchool,UGcollege, PGcollege, SecondaryMarks, HigherMarks, UGmarks, PGmarks].some((field)=> field?.trim() === "")){
+    if([Phone, Address, Experience, UGcollege, PGcollege, UGmarks, PGmarks].some((field)=> field?.trim() === "")){
         throw new ApiError(400, "All fields are required")
     }
 
@@ -301,24 +303,11 @@ const addTeacherDetails = asyncHandler(async(req,res)=>{
     }
 
     const AadhaarLocalPath = req.files?.Aadhaar?.[0]?.path;
-
-    const SecondaryLocalPath = req.files?.Secondary?.[0]?.path;
-
-    const HigherLocalPath = req.files?.Higher?.[0]?.path
-
     const UGLocalPath = req.files?.UG?.[0]?.path
-
     const PGLocalPath = req.files?.PG?.[0]?.path
-
 
     if(!AadhaarLocalPath){
         throw new ApiError(400, "Aadhaar is required")
-    }
-    if(!SecondaryLocalPath){
-        throw new ApiError(400, "Secondary marksheet is required")
-    }
-    if(!HigherLocalPath){
-        throw new ApiError(400, "Higher marksheet is required")
     }
     if(!UGLocalPath){
         throw new ApiError(400, "UG marksheet is required")
@@ -327,10 +316,7 @@ const addTeacherDetails = asyncHandler(async(req,res)=>{
         throw new ApiError(400, "PG marksheet is required")
     }
 
-
     const Aadhaar = await uploadOnCloudinary(AadhaarLocalPath)
-    const Secondary = await uploadOnCloudinary(SecondaryLocalPath)
-    const Higher = await uploadOnCloudinary(HigherLocalPath)
     const UG = await uploadOnCloudinary(UGLocalPath)
     const PG = await uploadOnCloudinary(PGLocalPath)
 
@@ -338,17 +324,11 @@ const addTeacherDetails = asyncHandler(async(req,res)=>{
         Phone,
         Address,
         Experience,
-        SecondarySchool,
-        HigherSchool,
         UGcollege,
         PGcollege,
-        SecondaryMarks,
-        HigherMarks,
         UGmarks,
         PGmarks,
         Aadhaar: Aadhaar.url,
-        Secondary: Secondary.url,
-        Higher: Higher.url,
         UG:UG.url,
         PG:PG.url,
     })
@@ -362,7 +342,6 @@ const addTeacherDetails = asyncHandler(async(req,res)=>{
     return res
     .status(200)
     .json(new ApiResponse(200, {teacher:theTeacher}, "documents uploaded successfully"))
-
 })
 
 const teacherdocuments = asyncHandler(async(req, res)=>{
