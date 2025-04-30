@@ -8,7 +8,7 @@
     "dev": "nodemon --watch src --ext js,json --ignore 'src/**/*.test.js' --exec 'node --experimental-json-modules src/index.js'",
     "start": "node src/index.js"
   },
-  "github": "https://github.com/Pika003/e-Learning-Platform.git",
+  "github": "https://github.com/jivanilakshya/Learning-path-dashboard-for-enhancing-skills",
   "author": "Parag, Satyajit, Gopi, Aditya",
   "license": "ISC",
   "dependencies": {

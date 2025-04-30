@@ -63,7 +63,7 @@ const Signup = () => {
       // Send data to backend (you need to implement this part)
       console.log("API Request URL:", `/api/${userType}/signup`);
       console.log("Request Data:", JSON.stringify(data));
-      console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
+      //console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
 
 
 
