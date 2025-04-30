@@ -4,6 +4,7 @@ import "./Login.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import Radiobtn from "../Components/RadioBtn/Radiobtn";
 import Header from "../Home/Header/Header";
+import { apiRequest } from "../../utils/api";
 
 export default function Login() {
   // State to hold user input and errors
@@ -39,82 +40,54 @@ export default function Login() {
       return;
     }
 
-    // Prepare data object to send to the backend
-    const data = {
-      Email: Email,
-      Password: Password,
-    };
-
     try {
-      // Send data to backend (you need to implement this part)
-      const response = await fetch(`/api/${userType}/login`, {
+      const responesData = await apiRequest(`/${userType}/login`, {
         method: 'POST',
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ Email, Password }),
       });
 
-      const responesData = await response.json()
-      if(responesData.message != 'Logged in'){
+      if(responesData.message !== 'Logged in'){
         setErr(responesData.message);
+        return;
       }
-      const userid = responesData.data.user._id
- 
-      // Handle response
-      if (response.ok) {
-        // Authentication successful, you can redirect or do something else
-        console.log("Login successful");
-        console.log(responesData.data.user.Isapproved);
-        
-        
-        if(responesData.data.user.Isapproved === "pending"){
-          if(responesData.data.user.Teacherdetails || responesData.data.user.Studentdetails){
-            navigate('/pending')
-          }else{
-            if(userType === 'student'){
-              navigate(`/StudentDocument/${userid}`)
-            }else if(userType === 'teacher'){
-              navigate(`/TeacherDocument/${userid}`)
-            }
-          }
-        }else if(responesData.data.user.Isapproved === "approved"){
-          if(userType === 'student'){
-            navigate(`/Student/Dashboard/${userid}/Search`)
-          }else if(userType === 'teacher'){
-            navigate(`/Teacher/Dashboard/${userid}/Home`)
-          }
-        }else if(responesData.data.user.Isapproved === "reupload"){
-          if(userType === 'teacher'){
-            navigate(`/rejected/${userType}/${userid}`)
-          }else{
-            navigate(`/rejected/${userType}/${userid}`)
-          }
+
+      const userid = responesData.data.user._id;
+      console.log("Login successful");
+      console.log(responesData.data.user.Isapproved);
+      
+      if(responesData.data.user.Isapproved === "pending"){
+        if(responesData.data.user.Teacherdetails || responesData.data.user.Studentdetails){
+          navigate('/pending')
         }else{
-          setErr('You are ban from our platform!');
+          if(userType === 'student'){
+            navigate(`/StudentDocument/${userid}`)
+          }else if(userType === 'teacher'){
+            navigate(`/TeacherDocument/${userid}`)
+          }
         }
-
-      } else if (response.status === 401) {
-        // Incorrect password
-        setErrors({ password: responesData.message || "Incorrect password" });
-      } else if (response.status === 403) {
-        // Account locked, disabled, or other authentication issues
-
-        setErrors({ general: responesData.message || "Login failed" });
-      } else if (response.status === 400) {
-        setErrors({ general: responesData.message || "User does not exist" });
-      } else if (response.status === 422) {
-        setErrors({
-          general: responesData.message || '"Email" must be a valid email',
-        });
-      } else {
-        // Other unexpected errors
-        setErrors({ general: "An unexpected error occurred" });
+      }else if(responesData.data.user.Isapproved === "approved"){
+        if(userType === 'student'){
+          navigate(`/Student/Dashboard/${userid}/Search`)
+        }else if(userType === 'teacher'){
+          navigate(`/Teacher/Dashboard/${userid}/Home`)
+        }
+      }else if(responesData.data.user.Isapproved === "reupload"){
+        navigate(`/rejected/${userType}/${userid}`)
+      }else{
+        setErr('You are ban from our platform!');
       }
     } catch (error) {
-   
-      setErrors(error.message);
+      if (error.message.includes('401')) {
+        setErrors({ password: "Incorrect password" });
+      } else if (error.message.includes('403')) {
+        setErrors({ general: "Login failed" });
+      } else if (error.message.includes('400')) {
+        setErrors({ general: "User does not exist" });
+      } else if (error.message.includes('422')) {
+        setErrors({ general: "Invalid email format" });
+      } else {
+        setErrors({ general: error.message || "An unexpected error occurred" });
+      }
     }
   };
 
